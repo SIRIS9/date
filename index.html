@@ -2,13 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Ghadeer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Ghadeer ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700&family=Nunito:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary-color: #ff4b4b;
-            --bg-color: #1a1a1d;
-            --text-color: #ffffff;
+            --primary-pink: #df4b6f;
+            --button-pink: #e84c75;
+            --bg-color: #fcf9fa;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -17,9 +26,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: var(--bg-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Nunito', sans-serif;
             overflow: hidden;
             color: var(--text-color);
         }
@@ -29,67 +38,102 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2rem;
+            gap: clamp(1rem, 3vw, 1.5rem);
             z-index: 10;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .image-container {
-            width: 300px;
-            height: 300px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background-color: #2a2a2e;
+        .top-icon {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            background-color: #f7e8ec;
+            width: clamp(50px, 10vw, 60px);
+            height: clamp(50px, 10vw, 60px);
             display: flex;
             justify-content: center;
             align-items: center;
+            border-radius: 50%;
+            margin-bottom: -15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        #reaction-img {
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 6vw, 3.2rem);
+            color: var(--primary-pink);
+            margin: 0;
+            padding: 0 10px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .image-container {
+            width: 100%;
+            max-width: 280px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(223, 75, 111, 0.15);
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 8px solid #fff;
+            transition: all 0.3s ease;
+        }
+
+        #reaction-img, #success-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: none; /* Hidden until first click or set default */
+            display: block;
         }
 
         .buttons-container {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 20px;
-            min-height: 150px;
+            gap: 15px;
+            width: 100%;
+            margin-top: 10px;
             position: relative;
+            min-height: 130px; /* يحافظ على مساحة الأزرار لمنع اهتزاز الشاشة */
         }
 
-        button {
+        .main-btn {
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            text-transform: uppercase;
+            transition: box-shadow 0.3s ease;
+            font-size: clamp(1rem, 4vw, 1.2rem);
         }
 
         #btn-yes {
-            background-color: #4CAF50;
+            background-color: var(--button-pink);
             color: white;
-            padding: 10px 20px;
-            font-size: 1rem;
-            transform: scale(0.6); /* Starts weirdly small */
+            padding: 16px 50px;
+            min-width: 180px;
+            z-index: 50;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(232, 76, 117, 0.3);
+            white-space: nowrap;
         }
 
         #btn-no {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px 40px;
-            font-size: 2rem;
-            transform: scale(1.5); /* Starts unusually large */
+            background-color: rgba(232, 76, 117, 0.1);
+            color: var(--primary-pink);
+            padding: 12px 40px;
+            border: 2px solid rgba(232, 76, 117, 0.2);
+            position: relative; 
+            z-index: 1000; /* تم رفعه ليكون دائماً فوق زر Yes وكل شيء آخر */
+            transition: top 0.2s ease, left 0.2s ease;
+            width: max-content; /* يمنع الزر من التمدد العشوائي */
+            white-space: nowrap; /* يمنع النص من الانقسام لسطرين */
         }
 
         /* Success Screen */
@@ -98,96 +142,278 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 1s ease-in-out;
+            gap: 10px;
+            animation: fadeIn 1.5s ease-in-out;
+            width: 90%;
+            max-width: 450px;
+            padding: clamp(15px, 5vw, 25px);
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(223, 75, 111, 0.1);
+            text-align: center;
+            max-height: 95vh;
+            overflow-y: auto;
+            scrollbar-width: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .success-screen h1 { 
+            font-size: clamp(1.6rem, 5vw, 2rem); 
+            margin-bottom: 5px; 
+        }
+
+        .cute-text {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #d16b86;
+            font-weight: 700;
+            margin: 5px 0 15px 0;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+        }
+
+        .custom-picker { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+
+        .picker-section { text-align: left; width: 100%; }
+
+        .picker-label {
+            font-size: 0.85rem; color: #888; font-weight: 700; margin-bottom: 8px;
+            text-transform: uppercase; letter-spacing: 1px; padding-left: 5px;
+        }
+
+        .picker-scroll {
+            display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; 
+            scrollbar-width: none; scroll-behavior: smooth;
+        }
+        
+        .picker-scroll::-webkit-scrollbar { display: none; }
+
+        .picker-item {
+            background: #fff9fa; border: 2px solid #f0b9c8; color: var(--primary-pink);
+            padding: 10px 20px; border-radius: 20px; font-family: 'Nunito', sans-serif;
+            font-weight: 700; font-size: clamp(0.9rem, 3vw, 1rem); cursor: pointer; 
+            white-space: nowrap; transition: all 0.3s ease; user-select: none;
+        }
+
+        .picker-item.active {
+            background: var(--button-pink); color: white; border-color: var(--button-pink);
+            box-shadow: 0 5px 15px rgba(232, 76, 117, 0.3); transform: scale(1.05);
+        }
+
+        #btn-share {
+            background: var(--button-pink); color: white; padding: 15px 25px; 
+            font-size: clamp(1rem, 3vw, 1.1rem); border-radius: 50px; margin-top: 15px; 
+            width: 100%; border: none; font-family: 'Nunito', sans-serif; 
+            font-weight: 700; cursor: pointer; box-shadow: 0 8px 20px rgba(232, 76, 117, 0.3); 
+            transition: transform 0.3s ease;
+        }
+
+        #btn-share:hover { transform: scale(1.02); box-shadow: 0 12px 25px rgba(232, 76, 117, 0.4); }
+
+        .particle {
+            position: fixed; top: -10vh; pointer-events: none; z-index: 100;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: scale(0.95); } 
+            to { opacity: 1; transform: scale(1); } 
+        }
+
+        @media (min-width: 768px) {
+            .buttons-container { flex-direction: row; min-height: 60px; }
+            .success-screen { overflow-y: visible; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Main Screen -->
     <div class="container" id="main-container">
-        <h1>Ghadeer, will you go out on a date with me?</h1>
-        
+        <div class="top-icon">💌</div>
+        <h1>Ghadeer, will you go on a date with me?</h1>
         <div class="image-container">
-            <!-- Set your initial default image below -->
-            <img id="reaction-img" src="PLACE_DEFAULT_IMAGE_HERE.png" alt="Reaction" style="display: block;">
+            <img id="reaction-img" src="PLACE_DEFAULT_IMAGE_HERE.png" alt="Reaction">
         </div>
-
         <div class="buttons-container">
-            <button id="btn-yes">Yes</button>
-            <button id="btn-no">No</button>
+            <button id="btn-yes" class="main-btn">Yes ✨</button>
+            <button id="btn-no" class="main-btn">No</button>
         </div>
     </div>
 
+    <!-- Success Screen -->
     <div class="success-screen" id="success-screen">
-        <h1>I knew you'd say Yes, Ghadeer! ❤️</h1>
-        <div class="image-container">
-            <!-- Set your final success image below -->
-            <img src="PLACE_SUCCESS_IMAGE_HERE.png" alt="Happy" style="display: block; width: 100%; height: 100%; object-fit: cover;">
+        <h1>I knew it! ❤️</h1>
+        <div class="image-container" style="max-width: 140px; border-width: 4px;">
+            <img id="success-img" src="PLACE_SUCCESS_IMAGE_HERE.png" alt="Happy">
         </div>
+        <p class="cute-text">When am I seeing that beautiful smile? 🌸✨</p>
+        
+        <div class="custom-picker">
+            <div class="picker-section">
+                <div class="picker-label">Month</div>
+                <div class="picker-scroll" id="month-picker"></div>
+            </div>
+            <div class="picker-section">
+                <div class="picker-label">Day</div>
+                <div class="picker-scroll" id="day-picker"></div>
+            </div>
+            <div class="picker-section">
+                <div class="picker-label">Time</div>
+                <div class="picker-scroll" id="time-picker">
+                    <div class="picker-item" data-value="Morning 🌅">Morning 🌅</div>
+                    <div class="picker-item" data-value="Afternoon ☀️">Afternoon ☀️</div>
+                    <div class="picker-item" data-value="Evening 🌙">Evening 🌙</div>
+                    <div class="picker-item" data-value="Night 🌠">Night 🌠</div>
+                </div>
+            </div>
+        </div>
+        <button id="btn-share">Download Invitation Card 💌</button>
     </div>
 
     <script>
+        // DOM Elements
         const btnYes = document.getElementById('btn-yes');
         const btnNo = document.getElementById('btn-no');
         const reactionImg = document.getElementById('reaction-img');
         const mainContainer = document.getElementById('main-container');
         const successScreen = document.getElementById('success-screen');
+        const btnShare = document.getElementById('btn-share');
+        const successImg = document.getElementById('success-img');
 
-        // State Tracking
         let noClickCount = 0;
-        let yesScale = 0.6;
-        let noScale = 1.5;
-
-        // Data Arrays: Add your manual image paths here
         const reactions = [
             "PLACE_REACTION_IMAGE_1_HERE.jpg", 
-            "PLACE_REACTION_IMAGE_2_HERE.jpg",
-            "PLACE_REACTION_IMAGE_3_HERE.jpg",
+            "PLACE_REACTION_IMAGE_2_HERE.jpg", 
+            "PLACE_REACTION_IMAGE_3_HERE.jpg", 
             "PLACE_REACTION_IMAGE_4_HERE.jpg"
         ];
 
-        const noTexts = [
-            "Are you sure?",
-            "Ghadeer, think again!",
-            "Really?!",
-            "You're breaking my heart!",
-            "Okay, I'm hiding the No button."
-        ];
-
-        btnNo.addEventListener('click', () => {
+        // Responsive No Button Movement
+        function moveNoButton(e) {
+            if(e) e.preventDefault();
             noClickCount++;
-
-            // 1. Update the funny text on the No button
-            const textIndex = Math.min(noClickCount - 1, noTexts.length - 1);
-            btnNo.innerText = noTexts[textIndex];
-
-            // 2. Update the reaction image
+            
             const imgIndex = Math.min(noClickCount - 1, reactions.length - 1);
             reactionImg.src = reactions[imgIndex];
-            reactionImg.style.display = 'block';
-
-            // 3. Mathematical scale adjustment (Weird & Funny Logic)
-            yesScale += 0.8; // Yes gets massively bigger
-            noScale -= 0.3;  // No gets smaller
-
-            btnYes.style.transform = `scale(${yesScale})`;
             
-            if (noScale <= 0) {
-                btnNo.style.display = 'none'; // Hide completely if it gets too small
-            } else {
-                btnNo.style.transform = `scale(${noScale})`;
+            // تحويل الزر إلى Fixed ليطير براحته خارج الحاوية
+            btnNo.style.position = 'fixed';
+            
+            // حساب المساحة المتاحة للهروب ديناميكياً لضمان عدم خروجه من الشاشة
+            const maxX = Math.max(10, window.innerWidth - btnNo.offsetWidth - 20);
+            const maxY = Math.max(10, window.innerHeight - btnNo.offsetHeight - 20);
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            btnNo.style.left = `${randomX}px`;
+            btnNo.style.top = `${randomY}px`;
+        }
+        
+        // دعم اللمس والهوفر
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (isTouchDevice) {
+            btnNo.addEventListener('touchstart', moveNoButton);
+        } else {
+            btnNo.addEventListener('mouseover', moveNoButton);
+        }
+        btnNo.addEventListener('click', moveNoButton);
+
+        // Particle System
+        function createParticles() {
+            const symbols = ['❤️', '🌸', '🦋', '✨', '💕'];
+            const particleCount = window.innerWidth < 768 ? 40 : 80;
+
+            for (let i = 0; i < particleCount; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    particle.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                    particle.style.fontSize = `${Math.random() * 1.5 + 1}rem`;
+                    particle.style.left = `${Math.random() * 100}vw`;
+                    particle.style.animationDuration = `${Math.random() * 2 + 2}s`;
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 4000);
+                }, i * 40); 
             }
+        }
+
+        // Yes Button Logic
+        btnYes.addEventListener('click', () => {
+            if (navigator.vibrate) {
+                navigator.vibrate([300, 100, 300, 100, 500, 200, 1000]);
+            }
+            createParticles();
+            setTimeout(() => {
+                mainContainer.style.display = 'none';
+                successScreen.style.display = 'flex';
+                btnNo.style.display = 'none'; 
+            }, 2500); 
         });
 
-        btnYes.addEventListener('click', () => {
-            // Transition to success screen
-            mainContainer.style.display = 'none';
-            successScreen.style.display = 'flex';
+        // --- Custom Picker Initialization ---
+        let selectedMonth = null, selectedDay = null, selectedTime = null;
+        
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        months.forEach(m => {
+            const div = document.createElement('div'); div.className = 'picker-item'; div.innerText = m;
+            div.onclick = () => { document.querySelectorAll('#month-picker .picker-item').forEach(el => el.classList.remove('active')); div.classList.add('active'); selectedMonth = m; };
+            document.getElementById('month-picker').appendChild(div);
+        });
+
+        for(let i=1; i<=31; i++) {
+            const div = document.createElement('div'); div.className = 'picker-item'; div.innerText = i;
+            div.onclick = () => { document.querySelectorAll('#day-picker .picker-item').forEach(el => el.classList.remove('active')); div.classList.add('active'); selectedDay = i; };
+            document.getElementById('day-picker').appendChild(div);
+        }
+
+        document.querySelectorAll('#time-picker .picker-item').forEach(item => {
+            item.onclick = () => { document.querySelectorAll('#time-picker .picker-item').forEach(el => el.classList.remove('active')); item.classList.add('active'); selectedTime = item.getAttribute('data-value'); };
+        });
+
+        // --- Canvas Generator ---
+        btnShare.addEventListener('click', () => {
+            if (!selectedMonth || !selectedDay || !selectedTime) { 
+                alert("Please select the Month, Day, and Time! 🌸"); 
+                return; 
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 800; canvas.height = 1000;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#fff9fa'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#f0b9c8'; ctx.lineWidth = 10; ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+            ctx.textAlign = 'center'; ctx.fillStyle = '#df4b6f';
+            ctx.font = 'bold 70px "Playfair Display", serif';
+            ctx.fillText('It is a Date! 💌', canvas.width / 2, 200);
+
+            ctx.fillStyle = '#666'; ctx.font = 'italic 35px "Playfair Display", serif';
+            ctx.fillText('Ghadeer officially said YES', canvas.width / 2, 280);
+
+            if (successImg.complete && successImg.naturalHeight !== 0) {
+                ctx.drawImage(successImg, (canvas.width - 250) / 2, 350, 250, 250);
+            } else {
+                ctx.beginPath(); ctx.moveTo(300, 450); ctx.lineTo(500, 450); 
+                ctx.strokeStyle = '#e84c75'; ctx.lineWidth = 2; ctx.stroke();
+            }
+
+            ctx.fillStyle = '#444'; ctx.font = 'bold 35px "Playfair Display", serif';
+            ctx.fillText('We are meeting on:', canvas.width / 2, 680);
+
+            ctx.fillStyle = '#df4b6f'; ctx.font = 'bold 50px "Playfair Display", serif';
+            ctx.fillText(`${selectedMonth} ${selectedDay}`, canvas.width / 2, 760);
+            
+            ctx.fillText(`In the ${selectedTime}`, canvas.width / 2, 830);
+
+            const link = document.createElement('a');
+            link.download = 'Our_Date_Invitation.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
         });
     </script>
 </body>
