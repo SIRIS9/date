@@ -100,7 +100,7 @@
             width: 100%;
             margin-top: 10px;
             position: relative;
-            min-height: 130px; /* يحافظ على مساحة الأزرار لمنع اهتزاز الشاشة */
+            min-height: 130px; 
         }
 
         .main-btn {
@@ -118,7 +118,7 @@
             color: white;
             padding: 16px 50px;
             min-width: 180px;
-            z-index: 50;
+            z-index: 1000; /* تم رفع الطبقة ليكون دائماً في المقدمة */
             position: relative;
             box-shadow: 0 8px 20px rgba(232, 76, 117, 0.3);
             white-space: nowrap;
@@ -130,10 +130,10 @@
             padding: 12px 40px;
             border: 2px solid rgba(232, 76, 117, 0.2);
             position: relative; 
-            z-index: 1000; /* تم رفعه ليكون دائماً فوق زر Yes وكل شيء آخر */
+            z-index: 50; /* تم خفض الطبقة ليكون تحت زر Yes */
             transition: top 0.2s ease, left 0.2s ease;
-            width: max-content; /* يمنع الزر من التمدد العشوائي */
-            white-space: nowrap; /* يمنع النص من الانقسام لسطرين */
+            width: max-content; 
+            white-space: nowrap; 
         }
 
         /* Success Screen */
@@ -230,7 +230,6 @@
 </head>
 <body>
 
-    <!-- Main Screen -->
     <div class="container" id="main-container">
         <div class="top-icon">💌</div>
         <h1>Ghadeer, will you go on a date with me?</h1>
@@ -243,11 +242,10 @@
         </div>
     </div>
 
-    <!-- Success Screen -->
     <div class="success-screen" id="success-screen">
         <h1>I knew it! ❤️</h1>
-        <div class="image-container" style="max-width: 140px; border-width: 4px;">
-            <img id="success-img" src="PLACE_SUCCESS_IMAGE_HERE.png" alt="Happy">
+        <div class="image-container" style="max-width: 250px; border: none; background: transparent; box-shadow: none; aspect-ratio: auto;">
+            <img id="success-img" src="PLACE_SUCCESS_IMAGE_HERE.png" alt="Happy" style="object-fit: contain;">
         </div>
         <p class="cute-text">When am I seeing that beautiful smile? 🌸✨</p>
         
@@ -291,7 +289,7 @@
             "PLACE_REACTION_IMAGE_4_HERE.jpg"
         ];
 
-        // Responsive No Button Movement
+        // Responsive No Button Movement with Collision Detection
         function moveNoButton(e) {
             if(e) e.preventDefault();
             noClickCount++;
@@ -299,21 +297,40 @@
             const imgIndex = Math.min(noClickCount - 1, reactions.length - 1);
             reactionImg.src = reactions[imgIndex];
             
-            // تحويل الزر إلى Fixed ليطير براحته خارج الحاوية
             btnNo.style.position = 'fixed';
             
-            // حساب المساحة المتاحة للهروب ديناميكياً لضمان عدم خروجه من الشاشة
             const maxX = Math.max(10, window.innerWidth - btnNo.offsetWidth - 20);
             const maxY = Math.max(10, window.innerHeight - btnNo.offsetHeight - 20);
             
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            // حساب حدود زر Yes لمنع زر No من التواجد فوقه
+            const yesRect = btnYes.getBoundingClientRect();
+            let randomX, randomY;
+            let overlapping = true;
+            let attempts = 0;
+            const padding = 20; // مسافة أمان إضافية حول زر Yes
+
+            while (overlapping && attempts < 50) {
+                randomX = Math.floor(Math.random() * maxX);
+                randomY = Math.floor(Math.random() * maxY);
+                
+                // التأكد من عدم تقاطع الإحداثيات الجديدة مع مساحة زر Yes
+                if (
+                    randomX < yesRect.right + padding &&
+                    randomX + btnNo.offsetWidth > yesRect.left - padding &&
+                    randomY < yesRect.bottom + padding &&
+                    randomY + btnNo.offsetHeight > yesRect.top - padding
+                ) {
+                    overlapping = true; 
+                } else {
+                    overlapping = false;
+                }
+                attempts++;
+            }
             
             btnNo.style.left = `${randomX}px`;
             btnNo.style.top = `${randomY}px`;
         }
         
-        // دعم اللمس والهوفر
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (isTouchDevice) {
             btnNo.addEventListener('touchstart', moveNoButton);
@@ -341,6 +358,54 @@
             }
         }
 
+        // --- Auto-detect Current Date Logic ---
+        const today = new Date();
+        const currentMonthIndex = today.getMonth(); 
+        const currentDayValue = today.getDate(); 
+
+        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        let selectedMonth = months[currentMonthIndex];
+        let selectedDay = currentDayValue;
+        let selectedTime = null;
+
+        // Populate Pickers
+        months.forEach((m, index) => {
+            const div = document.createElement('div'); 
+            div.className = 'picker-item'; 
+            div.innerText = m;
+            if (index === currentMonthIndex) div.classList.add('active');
+            
+            div.onclick = () => { 
+                document.querySelectorAll('#month-picker .picker-item').forEach(el => el.classList.remove('active')); 
+                div.classList.add('active'); 
+                selectedMonth = m; 
+            };
+            document.getElementById('month-picker').appendChild(div);
+        });
+
+        for(let i = 1; i <= 31; i++) {
+            const div = document.createElement('div'); 
+            div.className = 'picker-item'; 
+            div.innerText = i;
+            if (i === currentDayValue) div.classList.add('active');
+
+            div.onclick = () => { 
+                document.querySelectorAll('#day-picker .picker-item').forEach(el => el.classList.remove('active')); 
+                div.classList.add('active'); 
+                selectedDay = i; 
+            };
+            document.getElementById('day-picker').appendChild(div);
+        }
+
+        document.querySelectorAll('#time-picker .picker-item').forEach(item => {
+            item.onclick = () => { 
+                document.querySelectorAll('#time-picker .picker-item').forEach(el => el.classList.remove('active')); 
+                item.classList.add('active'); 
+                selectedTime = item.getAttribute('data-value'); 
+            };
+        });
+
         // Yes Button Logic
         btnYes.addEventListener('click', () => {
             if (navigator.vibrate) {
@@ -351,27 +416,15 @@
                 mainContainer.style.display = 'none';
                 successScreen.style.display = 'flex';
                 btnNo.style.display = 'none'; 
+                
+                setTimeout(() => {
+                    const activeMonth = document.querySelector('#month-picker .active');
+                    const activeDay = document.querySelector('#day-picker .active');
+                    if(activeMonth) activeMonth.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    if(activeDay) activeDay.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }, 300);
+
             }, 2500); 
-        });
-
-        // --- Custom Picker Initialization ---
-        let selectedMonth = null, selectedDay = null, selectedTime = null;
-        
-        const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        months.forEach(m => {
-            const div = document.createElement('div'); div.className = 'picker-item'; div.innerText = m;
-            div.onclick = () => { document.querySelectorAll('#month-picker .picker-item').forEach(el => el.classList.remove('active')); div.classList.add('active'); selectedMonth = m; };
-            document.getElementById('month-picker').appendChild(div);
-        });
-
-        for(let i=1; i<=31; i++) {
-            const div = document.createElement('div'); div.className = 'picker-item'; div.innerText = i;
-            div.onclick = () => { document.querySelectorAll('#day-picker .picker-item').forEach(el => el.classList.remove('active')); div.classList.add('active'); selectedDay = i; };
-            document.getElementById('day-picker').appendChild(div);
-        }
-
-        document.querySelectorAll('#time-picker .picker-item').forEach(item => {
-            item.onclick = () => { document.querySelectorAll('#time-picker .picker-item').forEach(el => el.classList.remove('active')); item.classList.add('active'); selectedTime = item.getAttribute('data-value'); };
         });
 
         // --- Canvas Generator ---
@@ -382,7 +435,8 @@
             }
 
             const canvas = document.createElement('canvas');
-            canvas.width = 800; canvas.height = 1000;
+            canvas.width = 800; 
+            canvas.height = 1150; 
             const ctx = canvas.getContext('2d');
 
             ctx.fillStyle = '#fff9fa'; ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -390,25 +444,25 @@
 
             ctx.textAlign = 'center'; ctx.fillStyle = '#df4b6f';
             ctx.font = 'bold 70px "Playfair Display", serif';
-            ctx.fillText('It is a Date! 💌', canvas.width / 2, 200);
+            ctx.fillText('It is a Date! 💌', canvas.width / 2, 180);
 
             ctx.fillStyle = '#666'; ctx.font = 'italic 35px "Playfair Display", serif';
-            ctx.fillText('Ghadeer officially said YES', canvas.width / 2, 280);
+            ctx.fillText('Ghadeer officially said YES', canvas.width / 2, 260);
 
             if (successImg.complete && successImg.naturalHeight !== 0) {
-                ctx.drawImage(successImg, (canvas.width - 250) / 2, 350, 250, 250);
+                ctx.drawImage(successImg, (canvas.width - 512) / 2, 320, 512, 405);
             } else {
                 ctx.beginPath(); ctx.moveTo(300, 450); ctx.lineTo(500, 450); 
                 ctx.strokeStyle = '#e84c75'; ctx.lineWidth = 2; ctx.stroke();
             }
 
             ctx.fillStyle = '#444'; ctx.font = 'bold 35px "Playfair Display", serif';
-            ctx.fillText('We are meeting on:', canvas.width / 2, 680);
+            ctx.fillText('We are meeting on:', canvas.width / 2, 820);
 
             ctx.fillStyle = '#df4b6f'; ctx.font = 'bold 50px "Playfair Display", serif';
-            ctx.fillText(`${selectedMonth} ${selectedDay}`, canvas.width / 2, 760);
+            ctx.fillText(`${selectedMonth} ${selectedDay}`, canvas.width / 2, 900);
             
-            ctx.fillText(`In the ${selectedTime}`, canvas.width / 2, 830);
+            ctx.fillText(`In the ${selectedTime}`, canvas.width / 2, 980);
 
             const link = document.createElement('a');
             link.download = 'Our_Date_Invitation.png';
